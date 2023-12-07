@@ -38,8 +38,6 @@ lerna-debug.log*
 # macOS
 .DS_Store
 
-# Docker
-docker-compose-prod*
 
 # MonDB
 mongo-data/
