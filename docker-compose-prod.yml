@@ -1,0 +1,34 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rcr-api
+    depends_on:
+      - mongodb
+    networks:
+      - rcr_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rcr-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.rcr-api.entrypoints=websecure" 
+      - "traefik.http.routers.rcr-api.tls.certresolver=myresolver"
+
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - ${MONGO_PATH}:/data/db
+    ports:
+      - ${MONGO_PORTS}:27017
+    networks:
+      - rcr_network
+
+networks:
+  rcr_network:
+    driver: bridge
